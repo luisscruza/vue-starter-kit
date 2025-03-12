@@ -23,10 +23,10 @@
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
         "pestphp/pest": "^3.7.1",
-        "pestphp/pest-plugin-drift": "^3.0",
         "pestphp/pest-plugin-laravel": "^3.0.0",
         "pestphp/pest-plugin-type-coverage": "^3.2.1",
-        "phpunit/phpunit": "^11.5.3"
+        "phpunit/phpunit": "^11.5.3",
+        "rector/rector": "^2.0.0"
     },
     "autoload": {
         "psr-4": {
@@ -66,11 +66,14 @@
             "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"php artisan inertia:start-ssr\" --names=server,queue,logs,ssr"
         ],
         "lint": "pint",
+        "refactor": "rector",
         "test:lint": "pint --test",
+        "test:refactor": "rector --dry-run",
         "test:unit": "pest --parallel --coverage",
         "test": [
             "@test:lint",
-            "@test:unit"
+            "@test:unit",
+            "@test:refactor"
         ]
 
     },
