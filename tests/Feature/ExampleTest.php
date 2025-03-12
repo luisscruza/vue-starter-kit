@@ -1,18 +1,10 @@
 <?php
 
-namespace Tests\Feature;
+declare(strict_types=1);
+uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+test('returns a successful response', function () {
+    $response = $this->get('/');
 
-class ExampleTest extends TestCase
-{
-    use RefreshDatabase;
-
-    public function test_returns_a_successful_response()
-    {
-        $response = $this->get('/');
-
-        $response->assertStatus(200);
-    }
-}
+    $response->assertStatus(200);
+});
