@@ -74,11 +74,10 @@
         "test:types": "phpstan",
         "test": [
             "@test:lint",
-            "@test:unit",
             "@test:types",
-            "@test:refactor"
+            "@test:refactor",
+            "@test:unit"
         ]
-
     },
     "extra": {
         "laravel": {
