@@ -35,7 +35,8 @@ final class PasswordController
             'password' => ['required', Password::defaults(), 'confirmed'],
         ]);
 
-        $request->user()->update([
+        /** @var array{current_password: string, password: string} $validated */
+        $request->user()?->update([
             'password' => Hash::make($validated['password']),
         ]);
 

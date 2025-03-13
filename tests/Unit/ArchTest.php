@@ -24,6 +24,7 @@ arch('avoid inheritance')
         'App\Services',
         'App\Http\Middleware',
         'App\Http\Requests',
+        'App\Console\Commands',
     ]);
 
 arch('annotations')
