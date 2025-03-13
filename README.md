@@ -18,6 +18,7 @@ This Vue starter kit utilizes Vue 3 and the Composition API, TypeScript, Tailwin
 - Pint rules for strict typing and code consistency.
 - New `make:action` command to quickly create an action class.
 - Git pre-push hook to run all tests/linting/types before pushing.
+- Google OAuth
 
 ## Installation
 
