@@ -50,9 +50,7 @@ final class MakeActionCommand extends Command
         $path = $this->getPath($name);
 
         if ($this->files->exists($path)) {
-            $this->error("Action {$name} already exists.");
-
-            return;
+            $this->fail("Action {$name} already exists.");
         }
 
         // Create the directory if it doesn't exist

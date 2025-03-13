@@ -71,3 +71,33 @@ it('can create a nested action file', function () {
         ->toContain('namespace App\Actions\Test\Nested')
         ->toContain('final class TestAction');
 });
+
+it('appends the action suffix to the action name if it is not provided', function () {
+    $actionName = 'Test';
+    $expectedPath = app_path('Actions/TestAction.php');
+
+    $this->artisan('make:action', ['name' => $actionName])
+        ->assertSuccessful();
+
+    expect(File::exists($expectedPath))->toBeTrue();
+
+    $generatedFile = File::get($expectedPath);
+    expect($generatedFile)
+        ->toContain('namespace App\Actions')
+        ->toContain('final class TestAction');
+
+});
+
+it('throws an error if the action already exists', function () {
+    $actionName = 'TestAction';
+    $expectedPath = app_path('Actions/TestAction.php');
+
+    $this->artisan('make:action', ['name' => $actionName])
+        ->assertSuccessful();
+
+    expect(File::exists($expectedPath))->toBeTrue();
+
+    $this->artisan('make:action', ['name' => $actionName])
+        ->expectsOutputToContain('Action already exists')
+        ->assertFailed();
+});
