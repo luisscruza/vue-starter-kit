@@ -41,15 +41,13 @@ it('can create a basic action file', function () {
 });
 
 it('properly formats the namespace for actions without nesting', function () {
-    
+
     $actionName = 'TestAction';
     $expectedPath = app_path('Actions/TestAction.php');
-
 
     $this->artisan('make:action', ['name' => $actionName])
         ->assertSuccessful();
 
-    
     expect(File::exists($expectedPath))->toBeTrue();
 
     $generatedFile = File::get($expectedPath);
@@ -59,15 +57,13 @@ it('properly formats the namespace for actions without nesting', function () {
 });
 
 it('can create a nested action file', function () {
-    
+
     $actionName = 'Test/Nested/TestAction';
     $expectedPath = app_path('Actions/Test/Nested/TestAction.php');
-
 
     $this->artisan('make:action', ['name' => $actionName])
         ->assertSuccessful();
 
-    
     expect(File::exists($expectedPath))->toBeTrue();
 
     $generatedFile = File::get($expectedPath);
