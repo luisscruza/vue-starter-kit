@@ -45,3 +45,45 @@ test('email is not verified with invalid hash', function () {
 
     expect($user->fresh()->hasVerifiedEmail())->toBeFalse();
 });
+
+test('verified user is redirected to dashboard from verification prompt', function () {
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($user)
+        ->get(route('verification.notice'));
+
+    $response->assertRedirect(route('dashboard', absolute: false));
+});
+
+test('unverified user can view verification prompt page', function () {
+    $user = User::factory()->unverified()->create();
+
+    $response = $this->actingAs($user)
+        ->get(route('verification.notice'));
+
+    $response->assertInertia(fn ($page) => $page
+        ->component('auth/VerifyEmail')
+        ->has('status')
+    );
+});
+
+test('guest cannot view verification prompt page', function () {
+    $response = $this->get(route('verification.notice'));
+
+    $response->assertRedirect(route('login'));
+});
+
+test('already verified user is redirected when trying to verify again', function () {
+    $user = User::factory()->create(); // Creates a verified user by default
+
+    $verificationUrl = URL::temporarySignedRoute(
+        'verification.verify',
+        now()->addMinutes(60),
+        ['id' => $user->id, 'hash' => sha1($user->email)]
+    );
+
+    $response = $this->actingAs($user)
+        ->get($verificationUrl);
+
+    $response->assertRedirect(route('dashboard', absolute: false).'?verified=1');
+});
