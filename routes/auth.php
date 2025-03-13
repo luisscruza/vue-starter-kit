@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\GoogleOAuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -34,6 +35,15 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
+
+    // Only add the routes if the Google client ID is set
+    if (config('services.google.client_id')) {
+        Route::get('auth/google', [GoogleOAuthController::class, 'store'])
+            ->name('auth.google');
+
+        Route::get('auth/google/callback', [GoogleOAuthController::class, 'index'])
+            ->name('auth.google.callback');
+    }
 });
 
 Route::middleware('auth')->group(function () {
