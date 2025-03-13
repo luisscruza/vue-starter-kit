@@ -44,6 +44,18 @@ final class StoreTeamInvitationRequest extends FormRequest
     }
 
     /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'email.unique' => 'An invitation with this email address already exists.',
+        ];
+    }
+
+    /**
      * Get the team instance from the route.
      */
     private function team(): Team

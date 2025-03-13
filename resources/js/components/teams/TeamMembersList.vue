@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import type { Team, TeamInvitation, TeamMember } from '@/types';
+import { useForm } from '@inertiajs/vue3';
 import InviteMemberDialog from './InviteMemberDialog.vue';
 import TeamMemberItem from './TeamMemberItem.vue';
 import PendingInvitationItem from './PendingInvitationItem.vue';
-import { useForm } from '@inertiajs/vue3';
+import ConfirmationDialog from '@/components/ui/ConfirmationDialog.vue';
 
 interface Props {
     team: Team;
@@ -12,6 +13,12 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+
+// State for confirmation dialogs
+const showDeleteDialog = ref(false);
+const showCancelInviteDialog = ref(false);
+const pendingMemberId = ref<number | null>(null);
+const pendingInvitation = ref<TeamInvitation | null>(null);
 
 // Get owner's member record if it exists
 const ownerMember = computed(() => {
@@ -24,23 +31,41 @@ const otherMembers = computed(() => {
 });
 
 const removeMember = (memberId: number) => {
-    if (confirm('Are you sure you want to remove this member?')) {
+    pendingMemberId.value = memberId;
+    showDeleteDialog.value = true;
+};
+
+const confirmRemoveMember = () => {
+    if (pendingMemberId.value) {
         useForm({}).delete(route('teams.members.destroy', { 
             team: props.team.id,
-            user: memberId,
+            user: pendingMemberId.value,
         }), {
             preserveScroll: true,
+            onSuccess: () => {
+                showDeleteDialog.value = false;
+                pendingMemberId.value = null;
+            },
         });
     }
 };
 
 const cancelInvitation = (invitation: TeamInvitation) => {
-    if (confirm('Are you sure you want to cancel this invitation?')) {
+    pendingInvitation.value = invitation;
+    showCancelInviteDialog.value = true;
+};
+
+const confirmCancelInvitation = () => {
+    if (pendingInvitation.value) {
         useForm({}).delete(route('teams.invitations.destroy', { 
             team: props.team.id,
-            invitation: invitation.id,
+            invitation: pendingInvitation.value.id,
         }), {
             preserveScroll: true,
+            onSuccess: () => {
+                showCancelInviteDialog.value = false;
+                pendingInvitation.value = null;
+            },
         });
     }
 };
@@ -59,7 +84,7 @@ const cancelInvitation = (invitation: TeamInvitation) => {
         <div class="divide-y divide-border">
             <!-- Owner -->
             <TeamMemberItem
-                :member="ownerMember || { ...team.owner, role: 'owner' as const }"
+                :member="ownerMember || { ...team.owner, role: 'owner' as const, membership: { role: 'owner' } }"
                 :can-manage-team="canManageTeam"
                 :is-owner="true"
             />
@@ -82,5 +107,23 @@ const cancelInvitation = (invitation: TeamInvitation) => {
                 :on-cancel="cancelInvitation"
             />
         </div>
+
+        <!-- Remove Member Dialog -->
+        <ConfirmationDialog
+            v-model:open="showDeleteDialog"
+            title="Remove Team Member"
+            description="Are you sure you want to remove this team member? This action cannot be undone."
+            confirm-text="Remove Member"
+            @confirm="confirmRemoveMember"
+        />
+
+        <!-- Cancel Invitation Dialog -->
+        <ConfirmationDialog
+            v-model:open="showCancelInviteDialog"
+            title="Cancel Invitation"
+            description="Are you sure you want to cancel this invitation? This action cannot be undone."
+            confirm-text="Cancel Invitation"
+            @confirm="confirmCancelInvitation"
+        />
     </div>
 </template> 

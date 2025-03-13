@@ -68,12 +68,16 @@ const inviteMember = () => {
                         type="email"
                         required
                         placeholder="Enter email address"
+                        :class="{ 'border-destructive': inviteForm.errors.email }"
                     />
+                    <span v-if="inviteForm.errors.email" class="text-sm text-destructive">
+                        {{ inviteForm.errors.email }}
+                    </span>
                 </div>
                 <div class="grid gap-2">
                     <Label for="role">Role</Label>
                     <Select v-model="inviteForm.role">
-                        <SelectTrigger>
+                        <SelectTrigger :class="{ 'border-destructive': inviteForm.errors.role }">
                             <SelectValue placeholder="Select a role" />
                         </SelectTrigger>
                         <SelectContent>
@@ -81,6 +85,9 @@ const inviteMember = () => {
                             <SelectItem value="member">Member</SelectItem>
                         </SelectContent>
                     </Select>
+                    <span v-if="inviteForm.errors.role" class="text-sm text-destructive">
+                        {{ inviteForm.errors.role }}
+                    </span>
                 </div>
                 <DialogFooter>
                     <Button type="submit" :disabled="inviteForm.processing">

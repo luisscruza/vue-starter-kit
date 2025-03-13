@@ -9,6 +9,9 @@ import { Label } from '@/components/ui/label';
 interface Props {
     team: Team;
     canManageTeam: boolean;
+    errors?: {
+        name?: string;
+    };
 }
 
 const props = defineProps<Props>();
@@ -22,7 +25,6 @@ const updateTeam = () => {
     updateForm.put(route('teams.update', { team: props.team.id }), {
         preserveScroll: true,
         onSuccess: () => {
-            updateForm.reset();
             nameInput.value?.blur();
         },
     });
@@ -43,6 +45,9 @@ const updateTeam = () => {
                     required
                     :disabled="!canManageTeam"
                 />
+                <span v-if="updateForm.errors.name" class="text-sm text-destructive">
+                    {{ updateForm.errors.name }}
+                </span>
             </div>
 
             <div class="flex items-center gap-4" v-if="canManageTeam">
