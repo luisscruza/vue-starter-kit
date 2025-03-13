@@ -56,6 +56,7 @@ arch('models')
         'App\Http',
         'App\Jobs',
         'App\Models',
+        'App\Traits',
         'App\Providers',
         'App\Actions',
         'App\Services',
