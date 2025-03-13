@@ -59,6 +59,7 @@ arch('models')
         'App\Traits',
         'App\Providers',
         'App\Actions',
+        'App\Policies',
         'App\Services',
         'Database\Factories',
         'Database\Seeders',

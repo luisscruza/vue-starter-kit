@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Traits;
 
 use App\Models\Team;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
@@ -12,6 +13,27 @@ use Spatie\Permission\Models\Role;
 
 trait HasTeams
 {
+    /**
+     * Get the current team of the user.
+     *
+     * @return BelongsTo<Team, $this>
+     */
+    public function currentTeam(): BelongsTo
+    {
+        return $this->belongsTo(Team::class, 'team_id');
+    }
+
+    /**
+     * Set the current team of the user.
+     */
+    public function setCurrentTeam(Team $team): void
+    {
+        if ($this->belongsToTeam($team)) {
+            $this->team_id = $team->id;
+            $this->save();
+        }
+    }
+
     /**
      * Check if the user owns the given team.
      */

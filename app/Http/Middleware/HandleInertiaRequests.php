@@ -52,6 +52,8 @@ final class HandleInertiaRequests extends Middleware
                 'quote' => ['message' => trim($message), 'author' => trim($author)],
                 'auth' => [
                     'user' => $request->user(),
+                    'teams' => $request->user()->teams ?? null,
+                    'currentTeam' => $request->user()->currentTeam ?? null,
                 ],
                 'ziggy' => array_merge(
                     (new Ziggy)->toArray(),

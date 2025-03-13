@@ -11,7 +11,6 @@ import { initializeTheme } from './composables/useAppearance';
 declare module 'vite/client' {
     interface ImportMetaEnv {
         readonly VITE_APP_NAME: string;
-        readonly VITE_GOOGLE_CLIENT_ID: string;
         [key: string]: string | boolean | undefined;
     }
 
@@ -22,18 +21,13 @@ declare module 'vite/client' {
 }
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
-const hasGoogleAuth = Boolean(import.meta.env.VITE_GOOGLE_CLIENT_ID);
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
     resolve: (name) => resolvePageComponent(`./pages/${name}.vue`, import.meta.glob<DefineComponent>('./pages/**/*.vue')),
     setup({ el, App, props, plugin }) {
-        const app = createApp({ render: () => h(App, props) });
-        
-        // Make hasGoogleAuth available globally
-        app.provide('hasGoogleAuth', hasGoogleAuth);
-        
-        app.use(plugin)
+        createApp({ render: () => h(App, props) })
+            .use(plugin)
             .use(ZiggyVue)
             .mount(el);
     },

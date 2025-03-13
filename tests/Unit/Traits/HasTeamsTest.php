@@ -204,3 +204,13 @@ test('non-member has no permissions', function () {
     expect($user->hasTeamPermission($team, 'any.permission'))->toBeFalse();
     expect($user->hasTeamRole($team, 'any-role'))->toBeFalse();
 });
+
+test('current team returns the correct team', function () {
+    $user = User::factory()->create();
+    $team = Team::factory()->create();
+    $user->team_id = $team->id;
+    $user->save();
+
+    expect($user->currentTeam)->toBeInstanceOf(Team::class);
+    expect($user->currentTeam->id)->toBe($team->id);
+});
