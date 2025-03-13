@@ -1,25 +1,28 @@
-# Laravel + Vue Starter Kit
+# Laravel + Vue Starter Kit + Modern PHP Tooling
+
+<a href="https://herd.laravel.com/new?starter-kit=cruzmediaorg/vue-starter-kit"><img src="https://img.shields.io/badge/Install%20with%20Herd-f55247?logo=laravel&logoColor=white"></a>
 
 ## Introduction
 
-Our Vue starter kit provides a robust, modern starting point for building Laravel applications with a Vue frontend using [Inertia](https://inertiajs.com).
+Enhanced version of the official Laravel Vue starter kit, with 100% test coverage and modern PHP tooling.
 
-Inertia allows you to build modern, single-page Vue applications using classic server-side routing and controllers. This lets you enjoy the frontend power of Vue combined with the incredible backend productivity of Laravel and lightning-fast Vite compilation.
+It has all the stuff I regularly do when I start a fresh new laravel project. 
 
 This Vue starter kit utilizes Vue 3 and the Composition API, TypeScript, Tailwind, and the [shadcn-vue](https://www.shadcn-vue.com) component library.
 
-## Official Documentation
+### Improvements
+- PHPStan: Level max.
+- 100% test coverage with PestPHP.
+- Arch Testing.
+- Rector rules for refactoring.
+- Pint rules for strict typing and code consistency.
+- New `make:action` command to quickly create an action class.
+- Git pre-push hook to run all tests/linting/types before pushing.
 
-Documentation for all Laravel starter kits can be found on the [Laravel website](https://laravel.com/docs/starter-kits).
+## Installation
 
-## Contributing
+Installation can be done by laravel installer.
 
-Thank you for considering contributing to our starter kit! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## License
-
-The Laravel + Vue starter kit is open-sourced software licensed under the MIT license.
+```bash
+laravel new --using=cruzmediaorg/vue-starter-kit
+```
