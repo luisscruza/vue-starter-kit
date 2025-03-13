@@ -37,19 +37,8 @@ export interface User {
     updated_at: string;
 }
 
-export interface Team {
-    id: number;
-    name: string;
-    created_at: string;
-    updated_at: string;
-    owner?: User;
-    members?: TeamMember[];
-    invitations?: TeamInvitation[];
-    currentUserRole?: string;
-}
-
 export interface TeamMember extends User {
-    role: string;
+    role: 'admin' | 'member';
     membership: {
         created_at: string;
     };
@@ -58,8 +47,19 @@ export interface TeamMember extends User {
 export interface TeamInvitation {
     id: number;
     email: string;
-    role_id: number;
+    role: 'admin' | 'member';
     created_at: string;
 }
 
-export type BreadcrumbItemType = BreadcrumbItem;
+export interface Team {
+    id: number;
+    name: string;
+    owner: User;
+    members?: TeamMember[];
+    invitations?: TeamInvitation[];
+    currentUserRole?: 'owner' | 'admin' | 'member';
+    created_at: string;
+    updated_at: string;
+}
+
+export type { BreadcrumbItem as BreadcrumbItemType };
