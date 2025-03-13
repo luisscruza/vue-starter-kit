@@ -8,6 +8,15 @@ use Illuminate\Support\Facades\DB;
 
 final class {{ class }}
 {
+
+       /**
+     * Create a new class instance.
+     */
+    public function __construct()
+    {
+        //
+    }
+    
     /**
      * Execute the action.
      */
