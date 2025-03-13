@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# Runs test suite before pushing.
+composer test

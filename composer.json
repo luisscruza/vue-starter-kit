@@ -70,7 +70,7 @@
         "refactor": "rector",
         "test:lint": "pint --test",
         "test:refactor": "rector --dry-run",
-        "test:unit": "pest --parallel --coverage --compact",
+        "test:unit": "pest --parallel --coverage --compact --min=100",
         "test:types": "phpstan",
         "test": [
             "@test:lint",
