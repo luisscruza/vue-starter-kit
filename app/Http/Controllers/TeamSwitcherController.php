@@ -24,6 +24,6 @@ final class TeamSwitcherController
 
         $user->setCurrentTeam($team);
 
-        return redirect()->back()->with('success', 'Team switched successfully');
+        return redirect()->route('dashboard')->with('success', 'Team switched successfully');
     }
 }

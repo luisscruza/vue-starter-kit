@@ -42,6 +42,24 @@ export interface Team {
     name: string;
     created_at: string;
     updated_at: string;
+    owner?: User;
+    members?: TeamMember[];
+    invitations?: TeamInvitation[];
+    currentUserRole?: string;
+}
+
+export interface TeamMember extends User {
+    role: string;
+    membership: {
+        created_at: string;
+    };
+}
+
+export interface TeamInvitation {
+    id: number;
+    email: string;
+    role_id: number;
+    created_at: string;
 }
 
 export type BreadcrumbItemType = BreadcrumbItem;
