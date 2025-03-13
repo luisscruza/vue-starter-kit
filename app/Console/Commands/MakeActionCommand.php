@@ -8,7 +8,7 @@ use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
-final class MakeAction extends Command
+final class MakeActionCommand extends Command
 {
     /**
      * The name and signature of the console command.
