@@ -84,9 +84,15 @@ const confirmCancelInvitation = () => {
         <div class="divide-y divide-border">
             <!-- Owner -->
             <TeamMemberItem
-                :member="ownerMember || { ...team.owner, role: 'owner' as const, membership: { role: 'owner' } }"
+                :member="ownerMember || { 
+                    ...team.owner, 
+                    role: 'owner',
+                    role_id: team.roles.find(r => r.name === 'admin')?.id ?? 0,
+                    membership: { role_id: team.roles.find(r => r.name === 'admin')?.id ?? 0, team_id: team.id, created_at: team.created_at } 
+                }"
                 :can-manage-team="canManageTeam"
                 :is-owner="true"
+                :team-roles="team.roles"
             />
 
             <!-- Members (excluding owner) -->
@@ -96,6 +102,7 @@ const confirmCancelInvitation = () => {
                 :member="member"
                 :can-manage-team="canManageTeam"
                 :on-remove="removeMember"
+                :team-roles="team.roles"
             />
 
             <!-- Pending Invitations -->

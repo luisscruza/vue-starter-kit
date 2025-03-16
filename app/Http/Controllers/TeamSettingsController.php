@@ -25,12 +25,13 @@ final class TeamSettingsController
             abort(403, 'Unauthorized');
         }
 
-        $members = $team->users->map(fn ($member): array => [
+        // @TODO: Fix PHPStan hint.
+        $members = $team->users->map(fn ($member): array => [ // @phpstan-ignore-line
             'id' => $member->id,
             'name' => $member->name,
             'email' => $member->email,
-            'role' => $member->teamRole($team)?->name,
             'created_at' => $member->membership->created_at, // @phpstan-ignore-line
+            'membership' => $member->membership, // @phpstan-ignore-line
         ])->values();
 
         return Inertia::render('teams/View', [
@@ -39,6 +40,10 @@ final class TeamSettingsController
                 'name' => $team->name,
                 'created_at' => $team->created_at,
                 'updated_at' => $team->updated_at,
+                'roles' => $team->roles->map(fn ($role): array => [
+                    'id' => $role->id,
+                    'name' => $role->name,
+                ]),
                 'owner' => [
                     'id' => $team->owner?->id,
                     'name' => $team->owner?->name,

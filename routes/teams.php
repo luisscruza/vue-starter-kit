@@ -23,6 +23,7 @@ Route::middleware('auth')->group(function () {
 
     // Team members
     Route::delete('/teams/{team}/members/{user}', [TeamMemberController::class, 'destroy'])->name('teams.members.destroy');
+    Route::put('/teams/{team}/members/{user}', [TeamMemberController::class, 'update'])->name('teams.members.update');
 });
 
 Route::middleware('guest')->group(function () {

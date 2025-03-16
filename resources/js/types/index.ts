@@ -37,11 +37,19 @@ export interface User {
     updated_at: string;
 }
 
-export interface TeamMember extends User {
-    role: 'admin' | 'member';
-    membership: {
-        created_at: string;
-    };
+export interface TeamMembership {
+    team_id: number;
+    role_id: number;
+    created_at: string;
+}
+
+export interface TeamMember {
+    id: number;
+    name: string;
+    email: string;
+    role: 'owner' | 'admin' | 'member';
+    role_id: number;
+    membership: TeamMembership;
 }
 
 export interface TeamInvitation {
@@ -51,12 +59,18 @@ export interface TeamInvitation {
     created_at: string;
 }
 
+export interface TeamRole {
+    id: number;
+    name: string;
+}
+
 export interface Team {
     id: number;
     name: string;
     owner: User;
     members?: TeamMember[];
     invitations?: TeamInvitation[];
+    roles: TeamRole[];
     currentUserRole?: 'owner' | 'admin' | 'member';
     created_at: string;
     updated_at: string;

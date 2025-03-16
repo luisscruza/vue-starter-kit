@@ -168,6 +168,7 @@ test('team view shows correct team information', function () {
             ->has('name')
             ->has('created_at')
             ->has('updated_at')
+            ->has('roles')
             ->has('owner', fn ($owner) => $owner
                 ->has('id')
                 ->has('name')
@@ -648,4 +649,55 @@ test('invitation team_id must match route team parameter', function () {
         'id' => $invitation->id,
         'team_id' => $team1->id,
     ]);
+});
+
+test('team member can be updated', function () {
+    $user = User::factory()->create();
+    $user2 = User::factory()->create();
+    $team = Team::factory()->create(['user_id' => $user->id]);
+
+    $adminRole = Role::create(['name' => 'admin', 'team_id' => $team->id]);
+    $memberRole = Role::create(['name' => 'member', 'team_id' => $team->id]);
+    $team->users()->attach($user->id, ['role_id' => $adminRole->id]);
+    $team->users()->attach($user2->id, ['role_id' => $memberRole->id]);
+
+    $response = $this
+        ->actingAs($user)
+        ->put(route('teams.members.update', [
+            'team' => $team,
+            'user' => $user2,
+        ]), [
+            'role_id' => $adminRole->id,
+        ]);
+
+    $response->assertRedirect();
+    $response->assertSessionHas('success', 'Team member updated successfully.');
+
+    $this->assertDatabaseHas('team_user', [
+        'team_id' => $team->id,
+        'user_id' => $user2->id,
+        'role_id' => $adminRole->id,
+    ]);
+});
+
+test('team member cannot be updated by non-admin', function () {
+    $user = User::factory()->create();
+    $user2 = User::factory()->create();
+    $team = Team::factory()->create(['user_id' => $user->id]);
+
+    $adminRole = Role::create(['name' => 'admin', 'team_id' => $team->id]);
+    $memberRole = Role::create(['name' => 'member', 'team_id' => $team->id]);
+    $team->users()->attach($user->id, ['role_id' => $adminRole->id]);
+    $team->users()->attach($user2->id, ['role_id' => $memberRole->id]);
+
+    $response = $this
+        ->actingAs($user2)
+        ->put(route('teams.members.update', [
+            'team' => $team,
+            'user' => $user2,
+        ]), [
+            'role_id' => $adminRole->id,
+        ]);
+
+    $response->assertStatus(403);
 });
