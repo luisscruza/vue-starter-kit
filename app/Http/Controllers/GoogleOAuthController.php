@@ -38,6 +38,7 @@ final class GoogleOAuthController
             'google_id' => $googleUser->id,
             'password' => Hash::make(Str::random(32)),
             'email_verified_at' => now(),
+            'avatar_url' => $googleUser->avatar,
         ]);
 
         Auth::login($user);
