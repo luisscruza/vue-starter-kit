@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 arch()->preset()->php();
-arch()->preset()->laravel();
+
 arch()->preset()->security();
 
 arch('controllers')
