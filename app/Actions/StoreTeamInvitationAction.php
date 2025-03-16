@@ -6,7 +6,10 @@ namespace App\Actions;
 
 use App\Models\Team;
 use App\Models\TeamInvitation;
+use App\Notifications\TeamInvitation as TeamInvitationNotification;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Spatie\Permission\Models\Role;
 
@@ -35,10 +38,17 @@ final class StoreTeamInvitationAction
                 throw new InvalidArgumentException('Invalid role selected.');
             }
 
-            return $team->invitations()->create([
+            $invitation = $team->invitations()->create([
+                'uuid' => Str::uuid(),
                 'email' => $attributes['email'],
                 'role_id' => $role->id,
             ]);
+
+            // Send invitation email
+            Notification::route('mail', $attributes['email'])
+                ->notify(new TeamInvitationNotification($team, $invitation));
+
+            return $invitation;
         });
     }
 }

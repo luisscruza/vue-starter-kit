@@ -30,6 +30,7 @@ final class TeamInvitationFactory extends Factory
     {
         return [
             'team_id' => Team::factory(),
+            'uuid' => $this->faker->uuid(),
             'role_id' => Role::create(['name' => 'member'])->id,
             'email' => $this->faker->unique()->safeEmail(),
         ];

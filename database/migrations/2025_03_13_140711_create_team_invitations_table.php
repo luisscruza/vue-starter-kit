@@ -17,6 +17,7 @@ return new class extends Migration
     {
         Schema::create('team_invitations', function (Blueprint $table): void {
             $table->id();
+            $table->uuid('uuid')->unique();
             $table->foreignIdFor(Team::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Role::class)->constrained()->cascadeOnDelete();
             $table->string('email');

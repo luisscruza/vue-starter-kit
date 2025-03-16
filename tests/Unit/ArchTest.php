@@ -25,6 +25,7 @@ arch('avoid inheritance')
         'App\Http\Middleware',
         'App\Http\Requests',
         'App\Console\Commands',
+        'App\Notifications',
     ]);
 
 arch('annotations')
@@ -63,6 +64,7 @@ arch('models')
         'App\Services',
         'Database\Factories',
         'Database\Seeders',
+        'App\Notifications',
     ]);
 
 arch('actions')

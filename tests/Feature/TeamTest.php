@@ -555,3 +555,97 @@ test('store team invitation request accepts valid team parameter', function () {
     expect($result)->toBeInstanceOf(Team::class);
     expect($result->id)->toBe($team->id);
 });
+
+test('can view valid team invitation page', function () {
+    $owner = User::factory()->create();
+    $team = Team::factory()->create(['user_id' => $owner->id]);
+    $invitation = TeamInvitation::factory()->create([
+        'team_id' => $team->id,
+        'email' => 'invited@example.com',
+    ]);
+
+    $response = $this->get(route('teams.invitations.accept', [
+        'team' => $team,
+        'invitation' => $invitation,
+    ]));
+
+    $response->assertStatus(200);
+    $response->assertInertia(fn ($page) => $page
+        ->component('teams/Invitations/Show')
+    );
+});
+
+test('cannot view non-existent team invitation', function () {
+    $owner = User::factory()->create();
+    $team = Team::factory()->create(['user_id' => $owner->id]);
+    $nonExistentInvitationId = 99999;
+
+    $response = $this->get(route('teams.invitations.accept', [
+        'team' => $team,
+        'invitation' => $nonExistentInvitationId,
+    ]));
+
+    $response->assertStatus(404);
+});
+
+test('cannot view invitation for non-existent team', function () {
+    $owner = User::factory()->create();
+    $team = Team::factory()->create(['user_id' => $owner->id]);
+    $invitation = TeamInvitation::factory()->create([
+        'team_id' => $team->id,
+        'email' => 'invited@example.com',
+    ]);
+
+    $nonExistentTeamId = 99999;
+
+    $response = $this->get(route('teams.invitations.accept', [
+        'team' => $nonExistentTeamId,
+        'invitation' => $invitation->id,
+    ]));
+
+    $response->assertStatus(404);
+});
+
+test('cannot view invitation belonging to different team', function () {
+    $owner = User::factory()->create();
+    $team1 = Team::factory()->create(['user_id' => $owner->id]);
+    $team2 = Team::factory()->create(['user_id' => $owner->id]);
+
+    $invitation = TeamInvitation::factory()->create([
+        'team_id' => $team1->id,
+        'email' => 'invited@example.com',
+    ]);
+
+    $response = $this->get(route('teams.invitations.accept', [
+        'team' => $team2,
+        'invitation' => $invitation,
+    ]));
+
+    $response->assertStatus(404);
+});
+
+test('invitation team_id must match route team parameter', function () {
+    $owner = User::factory()->create();
+    $team1 = Team::factory()->create(['user_id' => $owner->id]);
+    $team2 = Team::factory()->create(['user_id' => $owner->id]);
+
+    // Create an invitation explicitly setting team_id to team1
+    $invitation = TeamInvitation::factory()->create([
+        'team_id' => $team1->id,
+        'email' => 'invited@example.com',
+    ]);
+
+    // Try to access the invitation using team2's route but invitation belongs to team1
+    $response = $this->get(route('teams.invitations.accept', [
+        'team' => $team2,
+        'invitation' => $invitation,
+    ]));
+
+    $response->assertStatus(404);
+
+    // Verify the invitation still exists and wasn't affected
+    $this->assertDatabaseHas('team_invitations', [
+        'id' => $invitation->id,
+        'team_id' => $team1->id,
+    ]);
+});
