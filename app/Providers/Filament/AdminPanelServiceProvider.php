@@ -22,10 +22,6 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 final class AdminPanelServiceProvider extends PanelProvider
 {
-    /**
-     * @param Panel $panel
-     * @return Panel
-     */
     public function panel(Panel $panel): Panel
     {
         return $panel
