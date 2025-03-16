@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 final class {{ class }}
 {
 
-       /**
+    /**
      * Create a new class instance.
      */
     public function __construct()
@@ -19,6 +19,7 @@ final class {{ class }}
     
     /**
      * Execute the action.
+     * @param  array<string, mixed>  $attributes
      */
     public function handle(array $attributes)
     {
