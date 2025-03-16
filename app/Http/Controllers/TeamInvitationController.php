@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Actions\DeleteTeamInvitationAction;
-use App\Actions\StoreTeamInvitationAction;
+use App\Actions\Teams\Invitation\DeleteTeamInvitationAction;
+use App\Actions\Teams\Invitation\StoreTeamInvitationAction;
 use App\Http\Requests\StoreTeamInvitationRequest;
 use App\Models\Team;
 use App\Models\TeamInvitation;

@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Actions\CreateTeamAction;
+use App\Actions\Teams\CreateTeamAction;
 use App\Http\Requests\CreateTeamRequest;
-use App\Models\Team;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
