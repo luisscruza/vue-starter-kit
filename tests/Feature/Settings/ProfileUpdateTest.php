@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
 
@@ -19,9 +21,10 @@ test('profile information can be updated', function () {
 
     $response = $this
         ->actingAs($user)
-        ->patch('/settings/profile', [
+        ->put('/settings/profile', [
             'name' => 'Test User',
             'email' => 'test@example.com',
+            'avatar_url' => UploadedFile::fake()->image('avatar.jpg'),
         ]);
 
     $response
@@ -34,12 +37,32 @@ test('profile information can be updated', function () {
     expect($user->email)->toBe('test@example.com');
     expect($user->email_verified_at)->toBeNull();
 });
+
+it('old avatar is deleted when a new avatar is uploaded', function () {
+    $user = User::factory()->create(['avatar_url' => 'avatars/avatar_user_1_1234567890.jpg']);
+
+    Storage::disk('public')->put('avatars/avatar_user_1_1234567890.jpg', 'test');
+
+    $this
+        ->actingAs($user)
+        ->post('/settings/profile', [
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'avatar_url' => UploadedFile::fake()->image('avatar.jpg'),
+            '_method' => 'PUT',
+        ]);
+
+    expect(Storage::disk('public')->exists('avatars/avatar_user_1_1234567890.jpg'))->toBeFalse();
+
+    expect($user->avatar_url)->not->toBeNull();
+});
+
 test('email verification status is unchanged when the email address is unchanged', function () {
     $user = User::factory()->create();
 
     $response = $this
         ->actingAs($user)
-        ->patch('/settings/profile', [
+        ->put('/settings/profile', [
             'name' => 'Test User',
             'email' => $user->email,
         ]);

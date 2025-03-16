@@ -7,6 +7,7 @@ import { LogOut, Settings } from 'lucide-vue-next';
 
 interface Props {
     user: User;
+    impersonated: boolean;
 }
 
 defineProps<Props>();
@@ -27,6 +28,16 @@ defineProps<Props>();
             </Link>
         </DropdownMenuItem>
     </DropdownMenuGroup>
+    <DropdownMenuGroup v-if="impersonated">
+    <DropdownMenuSeparator />
+        <DropdownMenuItem :as-child="true">
+            <Link class="block w-full" :href="route('impersonate.leave')" as="button">
+                <LogOut class="mr-2 h-4 w-4" />
+                Leave Impersonation
+            </Link>
+        </DropdownMenuItem>
+    </DropdownMenuGroup>
+    
     <DropdownMenuSeparator />
     <DropdownMenuItem :as-child="true">
         <Link class="block w-full" method="post" :href="route('logout')" as="button">

@@ -10,6 +10,7 @@ import UserMenuContent from './UserMenuContent.vue';
 const page = usePage<SharedData>();
 const user = page.props.auth.user as User;
 const { isMobile, state } = useSidebar();
+const auth = page.props.auth;
 </script>
 
 <template>
@@ -28,7 +29,7 @@ const { isMobile, state } = useSidebar();
                     align="end" 
                     :side-offset="4"
                 >
-                    <UserMenuContent :user="user" />
+                    <UserMenuContent :impersonated="auth.impersonated" :user="user" />
                 </DropdownMenuContent>
             </DropdownMenu>
         </SidebarMenuItem>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
+import { ref, onUnmounted } from 'vue';
 
 import DeleteUser from '@/components/DeleteUser.vue';
 import HeadingSmall from '@/components/HeadingSmall.vue';
@@ -7,6 +8,8 @@ import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useInitials } from '@/composables/useInitials';
 import AppLayout from '@/layouts/AppLayout.vue';
 import SettingsLayout from '@/layouts/settings/Layout.vue';
 import { type BreadcrumbItem, type SharedData, type User } from '@/types';
@@ -27,17 +30,44 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 const page = usePage<SharedData>();
 const user = page.props.auth.user as User;
+const { getInitials } = useInitials();
+
+const previewUrl = ref<string | null>(null);
 
 const form = useForm({
     name: user.name,
     email: user.email,
+    avatar_url: null as File | null,
+    _method: 'put',
 });
 
 const submit = () => {
-    form.patch(route('profile.update'), {
+    form.post(route('profile.update'), {
         preserveScroll: true,
+        forceFormData: true,
     });
 };
+
+const handleAvatarChange = (e: Event) => {
+    const input = e.target as HTMLInputElement;
+    if (input.files?.length) {
+        // Revoke previous preview URL if exists
+        if (previewUrl.value) {
+            URL.revokeObjectURL(previewUrl.value);
+        }
+        
+        form.avatar_url = input.files[0];
+        // Create new preview URL
+        previewUrl.value = URL.createObjectURL(input.files[0]);
+    }
+};
+
+// Cleanup preview URL when component is unmounted
+onUnmounted(() => {
+    if (previewUrl.value) {
+        URL.revokeObjectURL(previewUrl.value);
+    }
+});
 </script>
 
 <template>
@@ -46,9 +76,38 @@ const submit = () => {
 
         <SettingsLayout>
             <div class="flex flex-col space-y-6">
-                <HeadingSmall title="Profile information" description="Update your name and email address" />
+                <HeadingSmall title="Profile information" description="Update your name, email address and profile picture" />
 
                 <form @submit.prevent="submit" class="space-y-6">
+                    <div class="flex items-center gap-4">
+                        <Avatar class="h-24 w-24">
+                            <AvatarImage 
+                                v-if="previewUrl" 
+                                :src="previewUrl" 
+                                :alt="user.name" 
+                            />
+                            <AvatarImage 
+                                v-else-if="user.avatar" 
+                                :src="user.avatar" 
+                                :alt="user.name" 
+                            />
+                            <AvatarFallback class="text-lg">
+                                {{ getInitials(user.name) }}
+                            </AvatarFallback>
+                        </Avatar>
+
+                        <div class="grid gap-1.5">
+                            <Label for="avatar">Profile picture</Label>
+                            <Input 
+                                id="avatar" 
+                                type="file" 
+                                accept="image/*"
+                                @change="handleAvatarChange"
+                            />
+                            <InputError class="mt-2" :message="form.errors.avatar_url" />
+                        </div>
+                    </div>
+
                     <div class="grid gap-2">
                         <Label for="name">Name</Label>
                         <Input id="name" class="mt-1 block w-full" v-model="form.name" required autocomplete="name" placeholder="Full name" />

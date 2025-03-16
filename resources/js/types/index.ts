@@ -28,6 +28,7 @@ export interface SharedData extends PageProps {
 }
 
 export interface User {
+    impersonated: boolean;
     id: number;
     name: string;
     email: string;

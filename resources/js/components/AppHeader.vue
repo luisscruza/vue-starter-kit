@@ -19,6 +19,7 @@ import { getInitials } from '@/composables/useInitials';
 import type { BreadcrumbItem, NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
 import { BookOpen, Folder, LayoutGrid, Menu, Search } from 'lucide-vue-next';
+import NavTeamSwitcher from '@/components/NavTeamSwitcher.vue';
 import { computed } from 'vue';
 
 interface Props {
@@ -160,6 +161,7 @@ const rightNavItems: NavItem[] = [
                             </template>
                         </div>
                     </div>
+                    <NavTeamSwitcher />
 
                     <DropdownMenu>
                         <DropdownMenuTrigger :as-child="true">
@@ -177,7 +179,7 @@ const rightNavItems: NavItem[] = [
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" class="w-56">
-                            <UserMenuContent :user="auth.user" />
+                            <UserMenuContent :impersonated="auth.impersonated" :user="auth.user" />
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>

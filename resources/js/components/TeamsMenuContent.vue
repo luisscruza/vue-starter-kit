@@ -61,14 +61,4 @@ const switchTeam = (teamId: number) => {
             Team Settings
         </Link>
     </DropdownMenuItem>
-
-    <DropdownMenuSeparator />
-    
-    <!-- Logout -->
-    <DropdownMenuItem :as-child="true">
-        <Link class="flex w-full items-center" method="post" :href="route('logout')" as="button">
-            <LogOut class="mr-2 h-4 w-4" />
-            Log out
-        </Link>
-    </DropdownMenuItem>
 </template>

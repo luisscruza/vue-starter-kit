@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Settings;
 
+use App\Actions\Profile\UpdateProfileAction;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
@@ -28,15 +29,12 @@ final class ProfileController
     /**
      * Update the user's profile information.
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function update(ProfileUpdateRequest $request, UpdateProfileAction $action): RedirectResponse
     {
-        $request->user()?->fill($request->validated());
+        /** @var \App\Models\User $user */
+        $user = $request->user();
 
-        if ($request->user()?->isDirty('email')) {
-            $request->user()->email_verified_at = null;
-        }
-
-        $request->user()?->save();
+        $action->handle($request->validated(), $user);
 
         return to_route('profile.edit');
     }

@@ -54,6 +54,7 @@ final class HandleInertiaRequests extends Middleware
                     'user' => $request->user(),
                     'teams' => $request->user()->teams ?? null,
                     'currentTeam' => $request->user()->currentTeam ?? null,
+                    'impersonated' => $request->user()?->isImpersonated(),
                 ],
                 'ziggy' => array_merge(
                     (new Ziggy)->toArray(),
